@@ -28,6 +28,9 @@ client.on('messageCreate', async (message) => {
 
   try {
     console.log(`[MSG] ${message.author.tag}: ${message.content}`);
+    if (command === 'help') {
+      return require('./commands/help').execute(message);
+    }
     if (command === 'bj') {
       const bet = parseInt(args[0]);
       const cooldownSec = 10;
