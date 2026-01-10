@@ -18,6 +18,7 @@ client.on('messageCreate', async (message) => {
   const command = args.shift()?.toLowerCase();
 
   try {
+    console.log(`[MSG] ${message.author.tag}: ${message.content}`);
     if (command === 'bj') {
       const bet = parseInt(args[0]);
       return require('./commands/bj').execute(message, bet);
@@ -55,8 +56,8 @@ client.on('messageCreate', async (message) => {
     }
 
   } catch (e) {
-    console.error(e);
-    message.reply('Có lỗi xảy ra khi xử lý lệnh.');
+    console.error('Error handling command', command, e.stack || e);
+    message.reply('Có lỗi xảy ra khi xử lý lệnh. (' + (e.message || 'unknown') + ')');
   }
 });
 
