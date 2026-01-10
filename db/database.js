@@ -5,7 +5,7 @@ const db = new Database('casino.db'); // tạo file casino.db trong thư mục d
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     user_id TEXT PRIMARY KEY,
-    balance INTEGER DEFAULT 1000,
+    balance INTEGER DEFAULT 0,
     last_daily INTEGER DEFAULT 0
   );
 `);

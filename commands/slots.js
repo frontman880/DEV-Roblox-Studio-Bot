@@ -7,6 +7,7 @@ module.exports = {
     if (isNaN(bet) || bet <= 0) return message.reply('Cược không hợp lệ. Ví dụ: `daica slots 100`');
 
     const user = getUser(message.author.id);
+    if (!user || user.balance <= 0) return message.reply('Bạn không có xu để chơi. Hãy kiếm xu bằng lệnh `daica daily` hoặc nhờ admin cấp.');
     if (bet > user.balance) return message.reply('Số dư không đủ để cược.');
 
     const roll = () => symbols[Math.floor(Math.random() * symbols.length)];
