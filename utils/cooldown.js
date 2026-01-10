@@ -1,7 +1,7 @@
 // utils/cooldown.js
 const cooldowns = new Map(); // Map lưu userId -> timestamp
 
-function checkCooldown(userId, command, delay = 5000) {
+function checkCooldown(userId, command, delay = 5000, set = true) {
   const key = `${userId}-${command}`;
   const now = Date.now();
 
@@ -13,7 +13,7 @@ function checkCooldown(userId, command, delay = 5000) {
     }
   }
 
-  cooldowns.set(key, now);
+  if (set) cooldowns.set(key, now);
   return 0; // 0 nghĩa là không bị cooldown
 }
 

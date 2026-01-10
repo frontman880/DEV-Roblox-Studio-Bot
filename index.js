@@ -1,5 +1,6 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
+const { checkCooldown } = require('./utils/cooldown');
 
 const client = new Client({
   intents: [
@@ -9,31 +10,74 @@ const client = new Client({
   ]
 });
 
-const prefix = 'daica';
+const prefixes = ['daica', 'd']; // allow short prefix 'd' as alias for 'daica'
 
 client.on('messageCreate', async (message) => {
-  if (message.author.bot || !message.content.startsWith(prefix)) return;
+  if (message.author.bot) return;
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const lower = message.content.toLowerCase();
+  // Compact help aliases: allow `dhelp` or `daicahelp` without space
+  if (lower === 'dhelp' || lower === 'daicahelp') {
+    return require('./commands/help').execute(message);
+  }
+  const matched = prefixes.find(p => lower === p || lower.startsWith(p + ' '));
+  if (!matched) return;
+
+  const args = message.content.slice(matched.length).trim().split(/ +/);
   const command = args.shift()?.toLowerCase();
 
   try {
     console.log(`[MSG] ${message.author.tag}: ${message.content}`);
     if (command === 'bj') {
       const bet = parseInt(args[0]);
-      return require('./commands/bj').execute(message, bet);
+      const cooldownSec = 10;
+      const remaining = checkCooldown(message.author.id, 'global', cooldownSec * 1000, false);
+      if (remaining > 0) {
+        try {
+          const warn = await message.reply(`<@${message.author.id}>, vui lòng đợi ${remaining} giây trước khi chơi tiếp.`);
+          setTimeout(() => warn.delete().catch(() => {}), remaining * 1000);
+        } catch (e) {}
+        return;
+      }
+
+      await require('./commands/bj').execute(message, bet);
+      checkCooldown(message.author.id, 'global', cooldownSec * 1000, true);
+      return;
     }
 
     if (command === 'slots') {
       const bet = parseInt(args[0]);
-      return require('./commands/slots').execute(message, bet);
+      const cooldownSec = 10;
+      const remaining = checkCooldown(message.author.id, 'global', cooldownSec * 1000, false);
+      if (remaining > 0) {
+        try {
+          const warn = await message.reply(`<@${message.author.id}>, vui lòng đợi ${remaining} giây trước khi chơi tiếp.`);
+          setTimeout(() => warn.delete().catch(() => {}), remaining * 1000);
+        } catch (e) {}
+        return;
+      }
+
+      await require('./commands/slots').execute(message, bet);
+      checkCooldown(message.author.id, 'global', cooldownSec * 1000, true);
+      return;
     }
 
-    if (command === 'coinflip') {
+    if (command === 'coinflip' || command === 'conflip' ) {
       const side = args[0]; // heads/tails
       const bet = parseInt(args[1]);
-      // file in repo is named `conflip.js` so require that file
-      return require('./commands/conflip').execute(message, side, bet);
+      const cooldownSec = 10;
+      const remaining = checkCooldown(message.author.id, 'global', cooldownSec * 1000, false);
+      if (remaining > 0) {
+        try {
+          const warn = await message.reply(`<@${message.author.id}>, vui lòng đợi ${remaining} giây trước khi chơi tiếp.`);
+          setTimeout(() => warn.delete().catch(() => {}), remaining * 1000);
+        } catch (e) {}
+        return;
+      }
+
+      await require('./commands/conflip').execute(message, side, bet);
+      checkCooldown(message.author.id, 'global', cooldownSec * 1000, true);
+      return;
     }
 
     if (command === 'balance') {
@@ -61,7 +105,7 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-client.once('ready', () => {
+client.once('clientReady', () => {
   console.log(`✅ Bot đã đăng nhập: ${client.user.tag}`);
 });
 
