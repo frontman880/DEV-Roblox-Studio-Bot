@@ -25,14 +25,24 @@ client.on('messageCreate', async (message) => {
 
   const args = message.content.slice(matched.length).trim().split(/ +/);
   const command = args.shift()?.toLowerCase();
+  // alias mapping for short commands
+  const aliasMap = {
+    s: 'slots',
+    cf: 'coinflip',
+    conflip: 'coinflip',
+    balan: 'balance',
+    leader: 'leaderboard',
+    help: 'help'
+  };
+  const cmd = aliasMap[command] || command;
 
   try {
     console.log(`[MSG] ${message.author.tag}: ${message.content}`);
-    if (command === 'help') {
+    if (cmd === 'help') {
       return require('./commands/help').execute(message);
     }
-    if (command === 'bj') {
-      const bet = parseInt(args[0]);
+    if (cmd === 'bj') {
+      const rawBet = args[0];
       const cooldownSec = 10;
       const remaining = checkCooldown(message.author.id, 'global', cooldownSec * 1000, false);
       if (remaining > 0) {
@@ -43,13 +53,13 @@ client.on('messageCreate', async (message) => {
         return;
       }
 
-      await require('./commands/bj').execute(message, bet);
+      await require('./commands/bj').execute(message, rawBet);
       checkCooldown(message.author.id, 'global', cooldownSec * 1000, true);
       return;
     }
 
-    if (command === 'slots') {
-      const bet = parseInt(args[0]);
+    if (cmd === 'slots') {
+      const rawBet = args[0];
       const cooldownSec = 10;
       const remaining = checkCooldown(message.author.id, 'global', cooldownSec * 1000, false);
       if (remaining > 0) {
@@ -60,14 +70,14 @@ client.on('messageCreate', async (message) => {
         return;
       }
 
-      await require('./commands/slots').execute(message, bet);
+      await require('./commands/slots').execute(message, rawBet);
       checkCooldown(message.author.id, 'global', cooldownSec * 1000, true);
       return;
     }
 
-    if (command === 'coinflip' || command === 'conflip' ) {
+    if (cmd === 'coinflip') {
       const side = args[0]; // heads/tails
-      const bet = parseInt(args[1]);
+      const rawBet = args[1];
       const cooldownSec = 10;
       const remaining = checkCooldown(message.author.id, 'global', cooldownSec * 1000, false);
       if (remaining > 0) {
@@ -78,7 +88,7 @@ client.on('messageCreate', async (message) => {
         return;
       }
 
-      await require('./commands/conflip').execute(message, side, bet);
+      await require('./commands/conflip').execute(message, side, rawBet);
       checkCooldown(message.author.id, 'global', cooldownSec * 1000, true);
       return;
     }
