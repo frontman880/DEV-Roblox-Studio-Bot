@@ -1,3 +1,9 @@
+node_modules/
+.env
+casino.db
+/.env.local
+npm-debug.log
+yarn-error.log
 # Prerequisites
 *.d
 
@@ -39,3 +45,5 @@
 
 # debug information files
 *.dwo
+node_modules
+*.env
