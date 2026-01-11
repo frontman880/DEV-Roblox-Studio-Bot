@@ -8,7 +8,7 @@ function checkCooldown(userId, command, delay = 5000, set = true) {
   if (cooldowns.has(key)) {
     const last = cooldowns.get(key);
     if (now - last < delay) {
-      const remaining = Math.ceil((delay - (now - last)) / 600);
+      const remaining = Math.ceil((delay - (now - last)) / 1000);
       return remaining; // trả về số giây còn lại
     }
   }

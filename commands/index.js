@@ -2,7 +2,6 @@ const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
 const { checkCooldown } = require('./utils/cooldown');
 
-// Khởi tạo client Discord
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -123,18 +122,4 @@ client.once('clientReady', () => {
   console.log(`✅ Bot đã đăng nhập: ${client.user.tag}`);
 });
 
-// Đăng nhập bot
 client.login(process.env.TOKEN);
-
-// Thêm web server để Render nhận diện cổng
-const express = require("express");
-const app = express();
-
-app.get("/", (req, res) => {
-  res.send("✅ Bot ANNOUNCEMENT-DEVELOPER-ROBLOX đang chạy!");
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🌐 Web server đang chạy trên cổng ${PORT}`);
-});

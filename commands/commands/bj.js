@@ -4,7 +4,7 @@ const { createDeck, shuffle, calcScore } = require('../utils/deck');
 module.exports = {
   async execute(message, rawBet) {
     const user = getUser(message.author.id);
-    if (!user || user.balance <= 0) return message.reply('Bạn không có xu để chơi. Hãy kiếm xu bằng lệnh `daica daily`.');
+    if (!user || user.balance <= 0) return message.reply('Bạn không có xu để chơi. Hãy kiếm xu bằng lệnh `daica daily` hoặc nhờ admin cấp.');
 
     // support `all` to bet entire balance
     let bet;
