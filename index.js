@@ -131,7 +131,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("✅ Bot ANNOUNCEMENT-DEVELOPER-ROBLOX đang chạy!");
+  res.send("✅ Bot DEVELOPER-ROBLOX đang chạy!");
 });
 
 const PORT = process.env.PORT || 3000;
